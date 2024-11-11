@@ -10,17 +10,20 @@ Ce site est en construction 🚧
 
 
 ```{toctree}
+:hidden:
 :maxdepth: 1
 :caption: 🚀 Physique
 Physics/thermo
 ```
 
 ```{toctree}
+:hidden:
 :caption: 👨🏻‍🏫 Education Nationale
 EducNat/pbpython
 ```
 
 ```{toctree}
+:hidden:
 :caption: ℹ️ À Propos
 About/about_me
 About/about_proj
