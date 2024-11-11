@@ -1,11 +1,8 @@
-# 🍷Marche aléatoire
+# Marche aléatoire 🍷
 
+Le mouvement brownien, aussi appelé marche aléatoire, revêt une importance particulière dans l’étude de la nature. Il a permis à l’époque de confirmer l’existence des atomes, ainsi que d'évaluer le nombre d’Avogadro. Les recherches associées à ce mouvement sont encore utilisées aujourd'hui dans de nombreux domaines des sciences physiques, mais aussi en finance (notamment pour l'analyse des cours boursiers). On parle alors de processus stochastique. Ces travaux sont associés à des scientifiques prestigieux tels qu’Albert Einstein et Jean Perrin. On se propose dans ce petit papier de modéliser le mouvement brownien suivant une approche élémentaire. On se servira du modèle de l’ivrogne (représentant une particule).[^3]
 
 <img src="../_static/_medias/physic/thermo/brown/Cover_Brownien.png" alt="Rémi MEVAERE">
-
-
-# Introduction
-Le mouvement brownien, aussi appelé marche aléatoire, revêt une importance particulière dans l’étude de la nature. Il a permis à l’époque de confirmer l’existence des atomes, ainsi que d'évaluer le nombre d’Avogadro. Les recherches associées à ce mouvement sont encore utilisées aujourd'hui dans de nombreux domaines des sciences physiques, mais aussi en finance (notamment pour l'analyse des cours boursiers). On parle alors de processus stochastique. Ces travaux sont associés à des scientifiques prestigieux tels qu’Albert Einstein et Jean Perrin. On se propose dans ce petit papier de modéliser le mouvement brownien suivant une approche élémentaire. On se servira du modèle de l’ivrogne (représentant une particule).[^3]
 
 <iframe
   src="https://player.vimeo.com/video/1021995358?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"

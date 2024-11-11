@@ -5,9 +5,9 @@
 .bd-sidebar-primary {
     flex-basis: 22%;
 }
-.toctree-wrapper.compound {
-    display: none;
-}
+/*.toctree-wrapper.compound {*/
+/*    display: none;*/
+/*}*/
 
 html[data-theme="dark"] img {
     filter: none;
