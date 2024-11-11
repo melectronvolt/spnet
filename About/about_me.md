@@ -1,6 +1,6 @@
 # Curriculum Vitæ 🎓
 
-<img src="_static/_medias/about/portrait.png" alt="Rémi MEVAERE" width="300px">
+<img src="../_static/_medias/about/portrait.png" alt="Rémi MEVAERE" width="300px">
 
 # **Cursus**
 - 2018 - 2019 : 🎓USTL - Lille 1 - Agrégation - Admis : rang 7

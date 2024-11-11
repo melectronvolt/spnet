@@ -3,6 +3,7 @@
 # 🔭 SP.NET
 ## 📑 Description
 
+
 | Projet :      | Sciences-Physiques.NET                                                                                                                                                                                                                        |
 | ------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Langage :     | Python 3.10                                                                                                                                                                                                                                   |
@@ -48,91 +49,91 @@
 
 ## 🖼 Screenshots
 
-```{image} _static/_medias/about/basket.png
+```{image} ../_static/_medias/about/basket.png
 :width: 500px
 :class: vspace
 :align: center
 ```
 
-```{image} _static/_medias/about/codecoverage.png
+```{image} ../_static/_medias/about/codecoverage.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/connexion.png
+```{image} ../_static/_medias/about/connexion.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/connexion.png
+```{image} ../_static/_medias/about/connexion.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/contacts.png
+```{image} ../_static/_medias/about/contacts.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/courses.png
+```{image} ../_static/_medias/about/courses.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/infos.png
+```{image} ../_static/_medias/about/infos.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/orders.png
+```{image} ../_static/_medias/about/orders.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/responsive.png
+```{image} ../_static/_medias/about/responsive.png
 :width: 300px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/shopping.png
+```{image} ../_static/_medias/about/shopping.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/shopping2.png
+```{image} ../_static/_medias/about/shopping2.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/stripe.png
+```{image} ../_static/_medias/about/stripe.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/task_scheduler.png
+```{image} ../_static/_medias/about/task_scheduler.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/unittest.png
+```{image} ../_static/_medias/about/unittest.png
 :width: 500px
 :align: center
 :class: vspace
 ```
 
-```{image} _static/_medias/about/videos.png
+```{image} ../_static/_medias/about/videos.png
 :width: 500px
 :align: center
 :class: vspace
@@ -141,7 +142,7 @@
 
 # 💌 Client Mail Checker
 
-```{image} _static/_medias/about/mailchecker.png
+```{image} ../_static/_medias/about/mailchecker.png
 :width: 500px
 :align: center
 :class: vspace
@@ -156,7 +157,7 @@
 
 ## 📣 Interview (verbatim)
 
-```{image} _static/_medias/about/kid.png
+```{image} ../_static/_medias/about/kid.png
 :width: 500px
 :align: center
 :class: vspace

@@ -2,3 +2,19 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+.bd-sidebar-primary {
+    flex-basis: 22%;
+}
+.toctree-wrapper.compound {
+    display: none;
+}
+
+html[data-theme="dark"] img {
+    filter: none;
+}
+html[data-theme="dark"] .bd-content img:not(.only-dark):not(.dark-light) {
+    background: unset;
+}
+.bd-sidebar-primary li.has-children > details > summary .toctree-toggle {
+    right: 20px; /* Adds 10px space on the right */
+}
