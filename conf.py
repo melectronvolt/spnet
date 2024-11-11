@@ -5,14 +5,25 @@ author = 'Rémi MEVAERE'
 
 extensions = []
 
-extensions = ["myst_parser","sphinx_copybutton"]
+
+
+
+extensions = ["myst_parser","sphinx_copybutton","sphinx_togglebutton"]
 html_theme = 'sphinx_book_theme'
 html_logo = "_static/logo.png"
 html_theme_options = {
-    "logo_only": True,
+    "repository_url": "https://github.com/melectronvolt/spnet",
+    "repository_branch": "main",  # Branch where docs are located
+    "use_repository_button": True,
+    "collapse_navigation": False,  # This keeps the sidebar expanded
+    "show_navbar_depth": 2,  # Adjust this to control depth if needed
+    "home_page_in_toc": True,
 }
-html_favicon = "_static/favicon.png"
+html_css_files = [
+    'custom.css',
+]
 
+html_favicon = "_static/favicon.png"
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
