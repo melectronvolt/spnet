@@ -184,31 +184,42 @@ Relions $\mathbf{n}$, le nombre de pas vers la droite (positifs), avec $\mathbf{
 
 $$ m = n - (N - n) = 2n - N \quad \implies \quad n = \frac{m + N}{2}$$
 
-> [!info]  Remarque 🧠
-> Nous pourrions suivre le même raisonnement en paramétrant les déplacements vers la gauche plutôt que ceux vers la droite ; les résultats finaux seraient identiques. En effet, dans notre modèle, l'ivrogne n'a pas de raison particulière de privilégier un déplacement vers la gauche par rapport à un pas vers la droite (les directions sont équiprobables, $p_{\pm} = 0{,}5$). 
+
+```{admonition} Remarque 🧠
+Nous pourrions suivre le même raisonnement en paramétrant les déplacements vers la gauche plutôt que ceux vers la droite ; les résultats finaux seraient identiques. En effet, dans notre modèle, l'ivrogne n'a pas de raison particulière de privilégier un déplacement vers la gauche par rapport à un pas vers la droite (les directions sont équiprobables, $p_{\pm} = 0{,}5$). 
+```
 
 On peut ensuite se demander quelle est la probabilité d'obtenir $\mathbf{n}$ déplacements vers la droite parmi $\mathbf{N}$ épreuves. C'est-à-dire, quelle est la probabilité que l'ivrogne aille $\mathbf{n}$ fois vers la droite lorsqu'il effectue $\mathbf{N}$ déplacements au total. La **loi binomiale** vue en mathématiques au lycée répond à cette question : 
 
 $$ \large{p(n, N) =C^{n}_{N}.p^{n}_{+}.p^{N-n}_{-}= \binom{N}{n} \, p_{+}^{\, n} \, p_{-}^{\, N - n}} $$
 
-> [!warning]  Notation 🖍️  
->  $p_{+}^{\, n}$ représente la probabilité d'effectuer un déplacement vers la droite, élevée à la puissance $n$.
-> 
+  
+
+```{admonition} Notation 🖍️
+ $p_{+}^{\, n}$ représente la probabilité d'effectuer un déplacement vers la droite, élevée à la puissance $n$.
+```
+
+ 
 ## Avec le théorème central limite
 
 Pour calculer la probabilité que l'ivrogne se retrouve en position $m$ après $N$ pas, on utilisera le **théorème central limite** (très utile lorsque $N$ est grand). 
 
-> [!TIP] Pourquoi utiliser le théorème central limite ?
-> Le théorème central limite est fondamental en probabilité et en statistique, il nous permet d'approcher la distribution binomiale par une loi normale (gaussienne), ce qui simplifie les calculs. Il affirme que la somme de variables aléatoires indépendantes et identiquement distribuées tend vers une distribution normale lorsque le nombre de variables augmente. 
-> 
-> ** Pertinence :**
-> - Chaque déplacement élémentaire de l'ivrogne est une variable aléatoire indépendante ;
-> - Les déplacements sont identiquement distribués (chaque pas a la même probabilité d'être à gauche ou à droite) ;
-> 
->** Intérêt : **
->  - **Simplicité de calcul** : Au lieu de manipuler des distributions binomiales complexes pour de grandes valeurs de $N$, on utilise une gaussienne, beaucoup plus facile à gérer analytiquement ; 
->  - **Prévision des comportements** : Il permet de prédire la probabilité de trouver l'ivrogne à une certaine distance de son point de départ après un grand nombre de pas. 
->  - **Universalité** : Ce théorème est applicable à de nombreux systèmes physiques où des variables aléatoires indépendantes s'additionnent, comme en physique statistique, en thermodynamique ou en finance.
+
+```{admonition} Pourquoi utiliser le théorème central limite ?
+Le théorème central limite est fondamental en probabilité et en statistique, il nous permet d'approcher la distribution binomiale par une loi normale (gaussienne), ce qui simplifie les calculs. Il affirme que la somme de variables aléatoires indépendantes et identiquement distribuées tend vers une distribution normale lorsque le nombre de variables augmente. 
+
+**Pertinence :**
+- Chaque déplacement élémentaire de l'ivrogne est une variable aléatoire indépendante ;
+- Les déplacements sont identiquement distribués (chaque pas a la même probabilité d'être à gauche ou à droite) ;
+ 
+**Intérêt :**
+- **Simplicité de calcul** : Au lieu de manipuler des distributions binomiales complexes pour de grandes valeurs de $N$, on utilise une gaussienne, beaucoup plus facile à gérer analytiquement ; 
+- **Prévision des comportements** : Il permet de prédire la probabilité de trouver l'ivrogne à une certaine distance de son point de départ après un grand nombre de pas. 
+- **Universalité** : Ce théorème est applicable à de nombreux systèmes physiques où des variables aléatoires indépendantes s'additionnent, comme en physique statistique, en thermodynamique ou en finance.
+
+```
+
+
 
 ### Variable aléatoire : déplacement élémentaire
 Définissons une variable aléatoire nommée **déplacement élémentaire** notée $\delta X_i$, ayant deux valeurs possibles $\delta X_i = \pm 1$ : 
@@ -243,8 +254,11 @@ $$ P(X_N) = \frac{1}{\sqrt{2\pi N}} \exp \left[ - \frac{X_N^2}{2 N} \right] $$
 $$ \LARGE\boxed{P(n) = \frac{1}{\sqrt{2\pi N }} \exp \left[ - \dfrac{m^2}{2 N } \right]} $$
 ### `Code 3` - Vérification de la distribution normale
 
-> [!NOTE] Déplacement
-> Pour la simulation on se facilite la tâche en utilisant un déplacement $l=\pm 1$
+
+```{note}
+Pour la simulation on se facilite la tâche en utilisant un déplacement $l=\pm 1$
+```
+
 
 ```python
 import numpy as np  
@@ -380,8 +394,11 @@ La distribution s'élargit proportionnellement à la racine carrée de la durée
 
 ### `Code 4` - Accord avec la théorie
 
-> [!WARNING] Optimization 🔩
-> Sur mon ordinateur, ce code absolument pas optimisé prend une durée très longue (plus de 16 minutes). Les versions Vectorisée et CUDA disponibles en **Annexes** sont beaucoup plus rapides (40 secondes et 3 secondes).
+
+```{admonition} Optimization 🔩
+Sur mon ordinateur, ce code absolument pas optimisé prend une durée très longue (plus de 16 minutes). Les versions Vectorisée et CUDA disponibles en **Annexes** sont beaucoup plus rapides (40 secondes et 3 secondes).
+
+```
 
 ```python
 import random  
@@ -820,13 +837,16 @@ $$
 \large\boxed{P(m) = \frac{1}{\sqrt{2\pi N}} \exp \left( - \dfrac{m^2}{2N} \right)}
 $$
 
-> [!NOTE] Intérêt de l'approximation de Stirling ici
-> L'utilisation de l'approximation de Stirling est particulièrement utile lorsque le nombre de pas $N$ est grand. Elle permet de simplifier les calculs en remplaçant les factorielles par des expressions plus faciles à manipuler. 
-> 
-> Dans le cas de l'ivrogne :
-> - **Simplicité de calcul** : Elle évite le calcul direct de factorielles de grands nombres, qui peut être complexe et impraticable.
-> - **Approche asymptotique** : Elle fournit une approximation valable pour $N \gg 1$, ce qui est souvent le cas dans les problèmes physiques et statistiques.
-> - **Lien avec la loi normale** : Elle permet de montrer que la distribution binomiale tend vers une loi normale lorsque $N$ est grand, ce qui est une manifestation du théorème central limite.
+
+```{admonition} Intérêt de l'approximation de Stirling ici
+L'utilisation de l'approximation de Stirling est particulièrement utile lorsque le nombre de pas $N$ est grand. Elle permet de simplifier les calculs en remplaçant les factorielles par des expressions plus faciles à manipuler. 
+
+Dans le cas de l'ivrogne :
+- **Simplicité de calcul** : Elle évite le calcul direct de factorielles de grands nombres, qui peut être complexe et impraticable.
+- **Approche asymptotique** : Elle fournit une approximation valable pour $N \gg 1$, ce qui est souvent le cas dans les problèmes physiques et statistiques.
+- **Lien avec la loi normale** : Elle permet de montrer que la distribution binomiale tend vers une loi normale lorsque $N$ est grand, ce qui est une manifestation du théorème central limite.
+```
+
 
 ## Code
 

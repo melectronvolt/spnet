@@ -13,6 +13,7 @@ Ce site est en construction 🚧
 :hidden:
 :maxdepth: 1
 :caption: 🚀 Physique
+Physics/mecanique
 Physics/thermo
 ```
 
@@ -20,6 +21,12 @@ Physics/thermo
 :hidden:
 :caption: 👨🏻‍🏫 Education Nationale
 EducNat/pbpython
+```
+
+```{toctree}
+:hidden:
+:caption: 👨🏻‍💻 Coding
+Coding/python
 ```
 
 ```{toctree}
