@@ -96,7 +96,7 @@ $$
 $$
 
 $$
-\large \Delta \overrightarrow{e_T} = \frac{\Delta S}{R_0} \cdot \overrightarrow{e_N} \implies \frac{\Delta \overrightarrow{e_T}}{\Delta S} = \frac{\overrightarrow{e_N}}{R_0} \implies \frac{d \overrightarrow{e_T}}{d s} = \frac{d \overrightarrow{e_N}}{R_0}
+\large \Delta \overrightarrow{e_T} = \frac{\Delta S}{R_0} \cdot \overrightarrow{e_N} \implies \frac{\Delta \overrightarrow{e_T}}{\Delta S} = \frac{\overrightarrow{e_N}}{R_0} \implies \frac{d \overrightarrow{e_T}}{d s} = \frac{ \overrightarrow{e_N}}{R_0}
 $$
 
 $$

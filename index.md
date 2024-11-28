@@ -28,6 +28,7 @@ EducNat/pbpython
 :caption: 👨🏻‍💻 Coding
 Coding/python
 Coding/cpp
+Coding/fibo
 ```
 
 ```{toctree}
