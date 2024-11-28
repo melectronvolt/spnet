@@ -92,6 +92,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
     ; [rbp+32] -> reference to goldenNbr
 ```
 ### Verification
+
 ```asm
     ; Some verification
     ; -----------------
@@ -131,6 +132,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
     jg too_big_label ; jump and leave
 ```
 ### Main loop
+
 ```asm
     xor rcx, rcx ; reset counter to 0
 main_loop:

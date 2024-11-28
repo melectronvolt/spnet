@@ -21,7 +21,7 @@ html_theme_options = {
     "repository_branch": "main",  # Branch where docs are located
     "use_repository_button": True,
     "collapse_navigation": False,  # This keeps the sidebar expanded
-    "show_navbar_depth": 3,  # Adjust this to control depth if needed
+    "show_navbar_depth": 2,  # Adjust this to control depth if needed
     "home_page_in_toc": True,
 }
 html_css_files = [
