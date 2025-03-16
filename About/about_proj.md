@@ -158,7 +158,7 @@
 ## 📣 Interview (verbatim)
 
 ```{image} ../_static/_medias/about/kid.png
-:width: 500px
+:width: 100px
 :align: center
 :class: vspace
 ```
