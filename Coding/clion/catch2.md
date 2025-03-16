@@ -36,10 +36,10 @@ $NAME_LIBRARY = "Catch2"
 $LIBRARY_VERSION = "3.8.0"
 $DOWNLOAD_URL = "https://github.com/catchorg/Catch2/archive/refs/tags/v${LIBRARY_VERSION}.zip"
 
-# Construire le chemin de base pour la bibliothèque
+# compiler le chemin de base pour la bibliothèque
 $BASE_LIBRARY_PATH = Join-Path -Path $BASE_PATH -ChildPath "$NAME_LIBRARY"
 
-# Construire le chemin vers la version spécifique de la bibliothèque
+# compiler le chemin vers la version spécifique de la bibliothèque
 $VERSION_LIBRARY_PATH = Join-Path -Path $BASE_LIBRARY_PATH -ChildPath "$LIBRARY_VERSION"
 
 # Définir le nom du répertoire extrait et le nom de l'archive
@@ -47,7 +47,7 @@ $EXTRACTED_DIR_NAME = "Catch2-${LIBRARY_VERSION}"
 $ARCHIVE_NAME = "v${LIBRARY_VERSION}.zip"
 $INSTALLATION_DIR = "${BASE_PATH}\${NAME_LIBRARY}\${LIBRARY_VERSION}"
 
-# Construire le chemin complet vers l'archive ZIP
+# compiler le chemin complet vers l'archive ZIP
 $ZIP_PATH = Join-Path -Path $BASE_LIBRARY_PATH -ChildPath $ARCHIVE_NAME
 
 New-Item -ItemType Directory -Path $BASE_LIBRARY_PATH -Force
@@ -70,7 +70,7 @@ Remove-Item -Path $ZIP_PATH
 
 Set-Location -Path $VERSION_LIBRARY_PATH
 
-# Fonction pour construire et installer la bibliothèque
+# Fonction pour compiler et installer la bibliothèque
 function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
     $directory = Join-Path -Path $VERSION_LIBRARY_PATH -ChildPath $build_directory
     # Créer un répertoire pour la construction
@@ -91,7 +91,7 @@ function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
     & cmake --install . --config $config
 }
 
-# Utilisation de la fonction pour construire et installer la bibliothèque dans différentes configurations
+# Utilisation de la fonction pour compiler et installer la bibliothèque dans différentes configurations
 BuildAndInstallLibrary "build_debug" "Debug" "OFF"
 BuildAndInstallLibrary "build_release" "Release" "OFF"
 BuildAndInstallLibrary "build_debug_dll" "Debug" "ON"

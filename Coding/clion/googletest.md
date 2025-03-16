@@ -65,7 +65,7 @@ function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
     New-Item -ItemType Directory -Path $directory -Force
     Set-Location -Path $directory
 
-    # Exécuter les commandes CMake pour configurer, construire et installer la bibliothèque
+    # Exécuter les commandes CMake pour configurer, compiler et installer la bibliothèque
     $cmakeArgs = @(
         "..",
         "-DCMAKE_INSTALL_PREFIX=${VERSION_LIBRARY_PATH}",
@@ -80,7 +80,7 @@ function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
     & cmake --install . --config $config
 }
 
-# Utilisation de la fonction pour construire et installer la bibliothèque dans différentes configurations
+# Utilisation de la fonction pour compiler et installer la bibliothèque dans différentes configurations
 BuildAndInstallLibrary "build_debug" "Debug" "OFF"
 BuildAndInstallLibrary "build_release" "Release" "OFF"
 BuildAndInstallLibrary "build_debug_dll" "Debug" "ON"
