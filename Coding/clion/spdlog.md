@@ -36,9 +36,9 @@ En résumé, spdlog est une bibliothèque de journalisation C++ moderne, rapide 
 ### Compilation
 ```powershell
 # Définir les chemins et les variables pour le téléchargement et l'installation de la bibliothèque
-$BASE_PATH = "F:\Frameworks"
+$BASE_PATH = "D:\Coding\Frameworks"
 $NAME_LIBRARY = "spdlog"
-$LIBRARY_VERSION = "1.15.0"
+$LIBRARY_VERSION = "1.15.1"
 $DOWNLOAD_URL = "https://github.com/gabime/spdlog/archive/refs/tags/v${LIBRARY_VERSION}.zip"
 
 # Construire le chemin de base pour la bibliothèque
@@ -86,6 +86,7 @@ function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
         "-DCMAKE_INSTALL_PREFIX=${VERSION_LIBRARY_PATH}",
         "-DCMAKE_BUILD_TYPE=$config",
         "-DBUILD_SHARED_LIBS=$sharedLibs"
+        "-DCMAKE_CXX_FLAGS=/utf-8"  # Force Unicode support in MSVC
     )
     # Run cmake with the arguments
     & cmake $cmakeArgs
@@ -104,6 +105,9 @@ BuildAndInstallLibrary "build_release_dll" "Release" "ON"
 # Spécifie la version minimale requise de CMake pour exécuter ce script.  
 cmake_minimum_required(VERSION 3.26)  
   
+# 🔧 Force MSVC to use UTF-8 encoding
+add_compile_options("/utf-8")  
+  
 # Nomme le projet "spdlog_testing".  
 project(spdlog_testing)  
   
@@ -111,9 +115,7 @@ project(spdlog_testing)
 set(CMAKE_CXX_STANDARD 23)  
   
 # Définit le chemin de base pour spdlog.  
-set(spdlog_BASE_PATH "F:/Frameworks/spdlog/1.15.0")  
-  
-  
+set(spdlog_BASE_PATH "D:/Coding/Frameworks/spdlog/1.15.1")  
   
 # Indique si spdlog est utilisé en tant que DLL (bibliothèque dynamique) ou non.  
 SET(USE_DYNAMIC_spdlog OFF)  
@@ -190,23 +192,27 @@ endif ()
 ```bash
 #!/bin/bash
 
-# Define common paths and variables
-ROOT_PATH="/home/remi/Frameworks"
-LIBRARY_NAME="spdlog"
-LIBRARY_VERSION="1.15.0"
-DOWNLOAD_URL="https://github.com/gabime/spdlog/archive/refs/tags/v${LIBRARY_VERSION}.tar.gz"
-EXTRACTED_DIR_NAME="spdlog-${LIBRARY_VERSION}"
-ARCHIVE_NAME="v${LIBRARY_VERSION}.tar.gz"
-INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_NAME}/${LIBRARY_VERSION}"
+# Update package list and install required dependencies
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential cmake unzip wget
 
-# Navigate to the root path and set up directories
+# Define common paths and variables
+ROOT_PATH="/opt/spdlog"
+LIBRARY_VERSION="1.15.1"
+EXTRACTED_DIR_NAME="spdlog-${LIBRARY_VERSION}"
+ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"
+INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_VERSION}"
+
+# Define the correct download URL
+DOWNLOAD_URL="https://github.com/gabime/spdlog/archive/refs/tags/v${LIBRARY_VERSION}.zip"
+
+# Create and navigate to the library installation directory
+mkdir -p $ROOT_PATH
 cd $ROOT_PATH
-mkdir -p $LIBRARY_NAME
-cd $LIBRARY_NAME
 
 # Download and extract the library
 wget $DOWNLOAD_URL
-tar -xzvf $ARCHIVE_NAME
+unzip $ARCHIVE_NAME
 mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
 rm $ARCHIVE_NAME
 cd $LIBRARY_VERSION
@@ -214,20 +220,24 @@ cd $LIBRARY_VERSION
 # Define common cmake options
 CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALLATION_DIR"
 
-# Build and install functions
+# Function to build and install the library
 build_and_install() {
     local build_dir=$1
     local build_type=$2
     local shared_libs=$3
-	mkdir $build_dir
+
+    # Remove old build directory if it exists and create a new one
+    rm -rf $build_dir
+    mkdir -p $build_dir
     cd $build_dir
+
     cmake .. $CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=$build_type -DBUILD_SHARED_LIBS=$shared_libs
     cmake --build . --config $build_type
     cmake --install . --config $build_type
     cd ..
 }
 
-# Invoke the build functions
+# Build and install spdlog in different configurations
 build_and_install "build_debug" "Debug" "OFF"
 build_and_install "build_release" "Release" "OFF"
 build_and_install "build_debug_so" "Debug" "ON"
@@ -245,7 +255,7 @@ project(spdlog_testing)
 set(CMAKE_CXX_STANDARD 23)  
   
 # Définit le chemin de base pour spdlog.  
-set(spdlog_BASE_PATH "/home/remi/Frameworks/spdlog/1.15.0")  
+set(spdlog_BASE_PATH "/opt/spdlog/1.15.1")  
   
 # Indique si spdlog est utilisé en tant que SO (bibliothèque dynamique) ou non.  
 SET(USE_DYNAMIC_spdlog ON)  

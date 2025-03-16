@@ -31,9 +31,9 @@
 En conclusion, googletest est un framework de tests unitaires pour C++ à la fois puissant et flexible. Conçu par Google, il est devenu l'un des outils de test les plus populaires et respectés dans la communauté C++ et est largement utilisé dans de nombreux projets, des petits aux grands. 🌟🔍🖥️
 ## Windows
 ```powershell
-$BASE_PATH = "F:\Frameworks"
+$BASE_PATH = "D:\Coding\Frameworks"
 $NAME_LIBRARY = "GoogleTest"
-$LIBRARY_VERSION = "1.15.2"
+$LIBRARY_VERSION = "1.16.0"
 $EXTRACTED_DIR_NAME = "googletest-${LIBRARY_VERSION}"
 $DOWNLOAD_URL = "https://github.com/google/googletest/archive/refs/tags/v${LIBRARY_VERSION}.zip"
 $ARCHIVE_NAME = "v${LIBRARY_VERSION}.zip"
@@ -94,7 +94,7 @@ set(CMAKE_CXX_STANDARD 23)
   
 SET(USE_DYNAMIC_GTEST OFF)  
 MESSAGE("Type: ${CMAKE_BUILD_TYPE}")  
-set(GTEST_BASE_PATH "F:/Frameworks/googletest/1.15.2")  
+set(GTEST_BASE_PATH "D:/Coding/Frameworks/googletest/1.16.0")  
   
 # Set the CMake prefix path to the install directory of GoogleTest  
 list(APPEND CMAKE_PREFIX_PATH ${GTEST_BASE_PATH})  
@@ -152,36 +152,54 @@ endif ()
 ```
 ## Linux
 ```sh
-ROOT_PATH="/home/remi/Frameworks"
-LIBRARY_NAME="GoogleTest"
-LIBRARY_VERSION="1.15.2"
-DOWNLOAD_URL="https://github.com/google/googletest/archive/refs/tags/v${LIBRARY_VERSION}.tar.gz"
-EXTRACTED_DIR_NAME="googletest-${LIBRARY_VERSION}"
-ARCHIVE_NAME="v${LIBRARY_VERSION}.tar.gz"
-INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_NAME}/${LIBRARY_VERSION}"
+#!/bin/bash
 
-# Navigate to the root path and set up directories
+# Update package list and install required dependencies
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential cmake unzip wget
+
+# Define variables for Google Test 1.16.0
+ROOT_PATH="/opt/gtest"
+LIBRARY_VERSION="1.16.0"
+LIBRARY_NAME_SUB_GTEST="googletest-${LIBRARY_VERSION}"
+DOWNLOAD_URL="https://github.com/google/googletest/archive/refs/tags/v${LIBRARY_VERSION}.zip"
+ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"
+INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_VERSION}"
+
+# Create the base installation directory and move to it
+mkdir -p $ROOT_PATH
 cd $ROOT_PATH
-mkdir -p $LIBRARY_NAME
-cd $LIBRARY_NAME
 
-# Download and extract the library
+# Download the Google Test archive
 wget $DOWNLOAD_URL
-tar -xzvf $ARCHIVE_NAME
-mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
-rm $ARCHIVE_NAME
-cd $INSTALLATION_DIR
 
-# Define common cmake options
+# Remove any previous extracted directories to ensure a clean installation
+rm -rf $INSTALLATION_DIR
+
+# Extract the archive
+unzip $ARCHIVE_NAME
+
+# Rename the extracted folder to match the version directly inside /opt/gtest
+mv $LIBRARY_NAME_SUB_GTEST $LIBRARY_VERSION
+
+# Remove the archive after extraction
+rm $ARCHIVE_NAME
+
+# Navigate to the Google Test directory
+cd $LIBRARY_VERSION
+
+# Define common CMake options
 CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALLATION_DIR"
 
-# Build and install functions
+# Function to build and install Google Test with specified build type and shared/static configuration
 build_and_install() {
     local build_dir=$1
     local build_type=$2
     local shared_libs=$3
+
+    # Remove any existing build directory before creating a new one
     rm -rf $build_dir
-	mkdir $build_dir
+    mkdir $build_dir
     cd $build_dir
     cmake .. $CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=$build_type -DBUILD_SHARED_LIBS=$shared_libs
     cmake --build . --config $build_type
@@ -189,13 +207,11 @@ build_and_install() {
     cd ..
 }
 
-
-# Invoke the build functions
+# Build and install Google Test for all configurations
 build_and_install "build_debug" "Debug" "OFF"
 build_and_install "build_release" "Release" "OFF"
 build_and_install "build_debug_so" "Debug" "ON"
 build_and_install "build_release_so" "Release" "ON"
-
 ```
 ### CMakeLists.txt
 
@@ -206,7 +222,7 @@ set(CMAKE_CXX_STANDARD 23)
   
 SET(USE_DYNAMIC_GTEST ON)  
 MESSAGE("Type: ${CMAKE_BUILD_TYPE}")  
-set(GTEST_BASE_PATH "/home/remi/Frameworks/GoogleTest/1.14.0")  
+set(GTEST_BASE_PATH "/opt/gtest/1.16.0")  
   
 # Set the CMake prefix path to the install directory of GoogleTest  
 list(APPEND CMAKE_PREFIX_PATH ${GTEST_BASE_PATH})  

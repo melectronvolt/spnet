@@ -75,7 +75,7 @@ project(QT_HelloWorld)
 set(CMAKE_CXX_STANDARD 23)  
   
 # Tell cmake where Qt is located  
-set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.6.0/msvc2019_64")  
+set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.8.2/msvc2022_64")  
 list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_PATH})  
   
   
@@ -173,7 +173,7 @@ project(QT_HelloWorld)
 set(CMAKE_CXX_STANDARD 23)  
   
 # Tell cmake where Qt is located  
-list(APPEND CMAKE_PREFIX_PATH "/home/remi/Frameworks/Qt/6.6.0/gcc_64/")  
+list(APPEND CMAKE_PREFIX_PATH "/home/remi/Frameworks/Qt/6.8.2/gcc_64/")  
   
 find_package(Qt6 COMPONENTS Core Widgets REQUIRED)  
 
@@ -289,13 +289,13 @@ Working Directory : `C:\Qt\Tools\QtDesignStudio\bin`
 
 ```powershell
 CALL "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x64
-SET _ROOT=F:\Frameworks\Qt\6.7.2\Src
+SET _ROOT=F:\Frameworks\Qt\6.8.2\Src
 SET _NINJA=F:\Frameworks\Qt\Tools\Ninja
 SET PATH=%_ROOT%;%_NINJA%;%PATH%
 ```
 ### Compilation static simple
 ```powershell
-configure -debug-and-release -opensource -static -platform win32-msvc -nomake examples -nomake tests -prefix F:\Frameworks\Qt\6.7.2\static
+configure -debug-and-release -opensource -static -platform win32-msvc -nomake examples -nomake tests -prefix F:\Coding\Frameworks\Qt\6.8.2\static
 cmake --build . --parallel
 ninja install
 ```
@@ -305,7 +305,7 @@ cmake_minimum_required(VERSION 3.25)
 project(QT_HelloWorld)
 
 # Tell cmake where Qt is located
-set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.7.0/static")
+set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.8.2/static")
 list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_PATH})
 
 # Tell cmake to find the modules Qt5Core and Qt6widgets
@@ -321,7 +321,7 @@ target_link_libraries(QT_HelloWorld Qt6::Core Qt6::Widgets)
 ### Compilation static avec Link Time Optimization
 
 ```powershell
-configure -debug-and-release -opensource -static -ltcg -platform win32-msvc -nomake examples -nomake tests -prefix F:\Frameworks\Qt\6.7.2\staticLTO
+configure -debug-and-release -opensource -static -ltcg -platform win32-msvc -nomake examples -nomake tests -prefix F:\Frameworks\Qt\6.8.2\staticLTO
 cmake --build . --parallel
 ninja install
 ```
@@ -331,7 +331,7 @@ cmake_minimum_required(VERSION 3.25)
 project(QT_HelloWorld)
 
 # Tell cmake where Qt is located
-set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.7.0/staticLTO")
+set(QT_PREFIX_PATH "F:/Frameworks/Qt/6.8.2/staticLTO")
 list(APPEND CMAKE_PREFIX_PATH ${QT_PREFIX_PATH})
 
 # Tell cmake to find the modules Qt5Core and Qt6widgets

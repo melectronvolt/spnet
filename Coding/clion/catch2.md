@@ -31,9 +31,9 @@ En synthèse, Catch2, avec ses mises à jour dans la v3, demeure un framework de
 - La possibilité du choix d’utiliser ensuite les DLL ou les versions statiques
 ```powershell
 # Définir les chemins et les variables pour le téléchargement et l'installation de la bibliothèque
-$BASE_PATH = "F:\Frameworks"
+$BASE_PATH = "D:\Coding\Frameworks"
 $NAME_LIBRARY = "Catch2"
-$LIBRARY_VERSION = "3.7.1"
+$LIBRARY_VERSION = "3.8.0"
 $DOWNLOAD_URL = "https://github.com/catchorg/Catch2/archive/refs/tags/v${LIBRARY_VERSION}.zip"
 
 # Construire le chemin de base pour la bibliothèque
@@ -72,7 +72,7 @@ Set-Location -Path $VERSION_LIBRARY_PATH
 
 # Fonction pour construire et installer la bibliothèque
 function BuildAndInstallLibrary($build_directory, $config, $sharedLibs) {
-	$directory = Join-Path -Path $VERSION_LIBRARY_PATH -ChildPath $build_directory
+    $directory = Join-Path -Path $VERSION_LIBRARY_PATH -ChildPath $build_directory
     # Créer un répertoire pour la construction
     New-Item -ItemType Directory -Path $directory -Force
     Set-Location -Path $directory
@@ -109,7 +109,7 @@ project(Catch2_testing)
 set(CMAKE_CXX_STANDARD 23)
 
 # Définit le chemin de base pour Catch2.
-set(CATCH2_BASE_PATH "F:/Frameworks/Catch2/3.4.0")
+set(CATCH2_BASE_PATH "D:/Coding/Frameworks/Catch2/3.8.0")
 
 # Indique si Catch2 est utilisé en tant que DLL (bibliothèque dynamique) ou non.
 SET(USE_DYNAMIC_CATCH2 ON)
@@ -177,7 +177,7 @@ endif ()
 # Define common paths and variables
 ROOT_PATH="/home/remi/Frameworks"
 LIBRARY_NAME="Catch2"
-LIBRARY_VERSION="3.7.1"
+LIBRARY_VERSION="3.8.0"
 DOWNLOAD_URL="https://github.com/catchorg/Catch2/archive/refs/tags/v${LIBRARY_VERSION}.tar.gz"
 EXTRACTED_DIR_NAME="Catch2-${LIBRARY_VERSION}"
 ARCHIVE_NAME="v${LIBRARY_VERSION}.tar.gz"
@@ -229,7 +229,7 @@ project(Catch2_testing)
 set(CMAKE_CXX_STANDARD 23)  
   
 # Définit le chemin de base pour Catch2.  
-set(CATCH2_BASE_PATH "/home/remi/Frameworks/Catch2/3.7.1")  
+set(CATCH2_BASE_PATH "/opt/catch2/3.8.0")  
   
 # Indique si Catch2 est utilisé en tant que DLL (bibliothèque dynamique) ou non.  
 SET(USE_DYNAMIC_CATCH2 OFF)  

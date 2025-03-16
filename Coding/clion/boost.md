@@ -42,64 +42,77 @@ powershell.exe -File "C:\Scripts\BackupScript.ps1" -noexit
 ```
 
 ```powershell
-$BASE_PATH = "F:\Frameworks"
+# Définition du chemin de base pour les frameworks
+$BASE_PATH = "D:\Coding\Frameworks"
 
+# Configuration pour la bibliothèque Boost
 $NAME_LIBRARY = "Boost"
-$LIBRARY_VERSION = "1.86.0"
-$LIBRARY_VERSION_NAME = "1_86_0"
-$LIBRARY_NAME_SUB_BOOST = "boost_1_86_0"
+$LIBRARY_VERSION = "1.87.0"
+$LIBRARY_VERSION_NAME = "1_87"
+$LIBRARY_NAME_SUB_BOOST = "boost_1_87_0"
 $ARCHIVE_NAME_BOOST = "boost_${LIBRARY_VERSION_NAME}"
-$DOWNLOAD_BOOST_URL = "https://boostorg.jfrog.io/artifactory/main/release/${LIBRARY_VERSION}/source/${ARCHIVE_NAME_BOOST}.zip"
+$DOWNLOAD_BOOST_URL = "https://archives.boost.io/release/${LIBRARY_VERSION}/source/${LIBRARY_NAME_SUB_BOOST}.zip"
 
+# Configuration pour vcpkg et définition des chemins d'installation des dépendances
 $NAME_LIBRARY_VCPKG = "vcpkg"
 $DIRECTORY_VCPKG_BASE = Join-Path -Path $BASE_PATH -ChildPath $NAME_LIBRARY_VCPKG
 $DIRECTORY_VCPKG_INSTALLED = Join-Path -Path $DIRECTORY_VCPKG_BASE -ChildPath "installed\x64-windows"
 $DIRECTORY_VCPKG_INSTALLED_INCLUDE = Join-Path -Path $DIRECTORY_VCPKG_INSTALLED -ChildPath "include"
 $DIRECTORY_VCPKG_INSTALLED_LIB = Join-Path -Path $DIRECTORY_VCPKG_INSTALLED -ChildPath "lib"
 
+# Configuration pour la bibliothèque ICU
 $NAME_LIBRARY_ICU = "ICU"
-$LIBRARY_VERSION_ICU = "release-75-1"
-$LIBRARY_NAME_ICU4C = "icu4c-75_1"
+$LIBRARY_VERSION_ICU = "release-74-2"
+$LIBRARY_NAME_ICU4C = "icu4c-74_2"
 $DOWNLOAD_ICU_URL = "https://github.com/unicode-org/icu/releases/download/${LIBRARY_VERSION_ICU}/${LIBRARY_NAME_ICU4C}-src.zip"
 $ARCHIVE_NAME_ICU = "${LIBRARY_VERSION_ICU}.zip"
 
+# Définition des chemins pour Boost, ICU et vcpkg
 $BASE_PATH_BOOST = Join-Path -Path $BASE_PATH -ChildPath $NAME_LIBRARY
 $BASE_PATH_ICU = Join-Path -Path $BASE_PATH -ChildPath $NAME_LIBRARY_ICU
 $BASE_PATH_VCPKG = Join-Path -Path $BASE_PATH -ChildPath $NAME_LIBRARY_VCPKG
 
-
+# Positionnement dans le répertoire de base
 Set-Location -Path $BASE_PATH
 
-##############################
+##################################
 #            VCPKG
-##############################
+##################################
 
+# Suppression du répertoire vcpkg s'il existe pour un démarrage propre
 if (Test-Path $DIRECTORY_VCPKG_BASE) {
     Remove-Item -Path $DIRECTORY_VCPKG_BASE -Recurse -Force
 }
 
+# Clonage du dépôt vcpkg depuis GitHub
 git clone https://github.com/microsoft/vcpkg.git
+
+# Passage dans le répertoire cloné de vcpkg
 Set-Location -Path $BASE_PATH_VCPKG 
 
-# Run the bootstrap script
+# Exécution du script de bootstrap pour initialiser vcpkg
 .\bootstrap-vcpkg.bat
 
-# Install the required libraries
+# Installation des bibliothèques requises via vcpkg (zlib, bzip2, liblzma, zstd, libiconv)
 .\vcpkg install zlib bzip2 liblzma zstd libiconv
 
-##############################
+##################################
 #            ICU
-##############################
+##################################
 
+# Création du répertoire pour ICU et positionnement à l'intérieur
 New-Item -ItemType Directory -Path $BASE_PATH_ICU -Force
 Set-Location -Path $BASE_PATH_ICU
 
+# Définition du chemin complet de l'archive ICU à télécharger
 $ZIP_PATH = Join-Path -Path $BASE_PATH_ICU -ChildPath $ARCHIVE_NAME_ICU
 
+# Suppression de l'archive ICU si elle existe déjà
 if (Test-Path $ZIP_PATH) {
     Remove-Item -Path $ZIP_PATH
 }
 
+# Suppression d'anciens dossiers ICU (si existants) pour éviter les conflits
 if (Test-Path "${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}") {
     Remove-Item -Path "${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" -Recurse -Force
 }
@@ -108,53 +121,91 @@ if (Test-Path "${BASE_PATH_ICU}\icu") {
     Remove-Item -Path "${BASE_PATH_ICU}\icu" -Recurse -Force
 }
 
+# Téléchargement de l'archive ICU depuis GitHub
 Invoke-WebRequest -Uri $DOWNLOAD_ICU_URL -OutFile $ZIP_PATH
 
+# Chargement de l'assembly .NET pour la manipulation de fichiers ZIP
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+# Extraction de l'archive ZIP dans le répertoire ICU
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP_PATH, $BASE_PATH_ICU)
 
+# Renommage du dossier extrait pour qu'il corresponde à la version spécifiée d'ICU
 Rename-Item -Path "$BASE_PATH_ICU\icu" -NewName "${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}"
 
+# Définition du chemin d'installation pour la construction d'ICU (dossier "allinone")
 $INSTALL_PATH_ICU = Join-Path -Path "${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" -ChildPath "\source\allinone"
 
+# Passage dans le répertoire de construction d'ICU
 Set-Location -Path $INSTALL_PATH_ICU
+
+# Compilation d'ICU en mode Debug puis en mode Release avec MSBuild pour la plateforme x64
 msbuild allinone.sln /p:Configuration=Debug /p:Platform=x64
 msbuild allinone.sln /p:Configuration=Release /p:Platform=x64
 
-##############################
+##################################
 #            BOOST
-##############################
+##################################
 
+# Création du répertoire pour Boost et positionnement à l'intérieur
 New-Item -ItemType Directory -Path $BASE_PATH_BOOST -Force
 Set-Location -Path $BASE_PATH_BOOST
 
+# Définition du chemin complet de l'archive Boost à télécharger
 $ZIP_PATH = Join-Path -Path $BASE_PATH_BOOST -ChildPath "${ARCHIVE_NAME_BOOST}.zip"
 
+# Suppression de l'archive Boost si elle existe déjà
 if (Test-Path $ZIP_PATH) {
     Remove-Item -Path $ZIP_PATH
 }
 
+# Suppression d'un ancien dossier Boost (si existant) pour éviter les conflits
 if (Test-Path "$BASE_PATH_BOOST\${LIBRARY_VERSION}") {
     Remove-Item -Path "$BASE_PATH_BOOST\${LIBRARY_VERSION}" -Recurse -Force
 }
 
+# Téléchargement de l'archive Boost depuis le serveur officiel
 Invoke-WebRequest -Uri $DOWNLOAD_BOOST_URL -OutFile $ZIP_PATH
 
+# Extraction de l'archive ZIP de Boost dans le répertoire Boost
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::ExtractToDirectory($ZIP_PATH, $BASE_PATH_BOOST)
 
+# Suppression de l'archive ZIP après extraction
 if (Test-Path $ZIP_PATH) {
     Remove-Item -Path $ZIP_PATH
 }
 
+# Renommage du dossier extrait pour correspondre à la version spécifiée de Boost
 Rename-Item -Path "$BASE_PATH_BOOST\${LIBRARY_NAME_SUB_BOOST}" -NewName "${BASE_PATH_BOOST}\${LIBRARY_VERSION}"
+
+# Passage dans le répertoire Boost correspondant à la version spécifiée
 Set-Location -Path "$BASE_PATH_BOOST\${LIBRARY_VERSION}"
 
+# Exécution du script de bootstrap de Boost pour initialiser la compilation
 .\bootstrap.bat
 
-.\b2.exe address-model=64 variant=debug link=static,shared "-sZLIB_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZLIB_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sBZIP2_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sBZIP2_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sLZMA_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sLZMA_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sZSTD_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZSTD_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sICU_PATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" "-sICU_INCLUDE=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\include" "-sICU_LIBPATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\lib64" "-sICONV_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sICONV_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sICONV_PATH=${DIRECTORY_VCPKG_INSTALLED}"
+# Compilation de Boost en mode Debug (64 bits, liens statiques et dynamiques) en passant les chemins d'inclusion et des librairies
+.\b2.exe address-model=64 variant=debug link=static,shared `
+    "-sZLIB_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZLIB_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sBZIP2_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sBZIP2_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sLZMA_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sLZMA_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sZSTD_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZSTD_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sICU_PATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" "-sICU_INCLUDE=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\include" `
+    "-sICU_LIBPATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\lib64" `
+    "-sICONV_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sICONV_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sICONV_PATH=${DIRECTORY_VCPKG_INSTALLED}"
 
-.\b2.exe address-model=64 variant=release link=static,shared "-sZLIB_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZLIB_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sBZIP2_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sBZIP2_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sLZMA_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sLZMA_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sZSTD_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZSTD_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sICU_PATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" "-sICU_INCLUDE=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\include" "-sICU_LIBPATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\lib64" "-sICONV_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sICONV_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" "-sICONV_PATH=${DIRECTORY_VCPKG_INSTALLED}"
+# Compilation de Boost en mode Release (64 bits, liens statiques et dynamiques) en passant les mêmes paramètres de configuration
+.\b2.exe address-model=64 variant=release link=static,shared `
+    "-sZLIB_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZLIB_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sBZIP2_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sBZIP2_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sLZMA_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sLZMA_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sZSTD_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sZSTD_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sICU_PATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}" "-sICU_INCLUDE=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\include" `
+    "-sICU_LIBPATH=${BASE_PATH_ICU}\${LIBRARY_VERSION_ICU}\lib64" `
+    "-sICONV_INCLUDE=${DIRECTORY_VCPKG_INSTALLED_INCLUDE}" "-sICONV_LIBPATH=${DIRECTORY_VCPKG_INSTALLED_LIB}" `
+    "-sICONV_PATH=${DIRECTORY_VCPKG_INSTALLED}"
 ```
 
 ```{image} ../../_static/_medias/coding/clion/boostcmd.png
@@ -164,17 +215,17 @@ Set-Location -Path "$BASE_PATH_BOOST\${LIBRARY_VERSION}"
 ```
 
 ### b2 info
-Pour construire Boost avec les paramètres donnés, vous pouvez utiliser la commande suivante :
+Pour compiler Boost avec les paramètres donnés, vous pouvez utiliser la commande suivante :
 ```bash
 b2 variant=debug,release link=static,shared threading=multi address-model=64 toolset=msvc-14.3 --build-type=complete --layout=versioned stage
 ```
 Explication des paramètres :
-- `variant=debug,release` : Construire à la fois les versions de débogage et de production.
+- `variant=debug,release` : Compiler à la fois les versions de débogage et de production.
 - `link=static,shared` : Générer à la fois des bibliothèques statiques (`.lib`) et des bibliothèques dynamiques (`.dll`).
 - `threading=multi` : Activer le multi-threading.
 - `address-model=64` : Cibler l'architecture x64.
 - `toolset=msvc-14.3` : Utiliser le compilateur Visual C++ 14.3. Vous devrez peut-être ajuster cela en fonction de la version de Visual Studio que vous utilisez.
-- `--build-type=complete` : Construire toutes les variantes de bibliothèques.
+- `--build-type=complete` : Compiler toutes les variantes de bibliothèques.
 - `--layout=versioned` : Générer des bibliothèques avec une disposition versionnée. Cette option ajoutera un suffixe aux noms des bibliothèques avec la version de Boost, le nom du compilateur et d'autres options.
 - `stage` : Cela indique à `b2` de placer les bibliothèques construites dans le répertoire `stage`.
 
@@ -184,7 +235,7 @@ Vous pouvez remplacer `msvc-14.3` par la version du compilateur de votre choix. 
 cmake_minimum_required(VERSION 3.26)  
 project(Boost_testing)  
   
-set(BOOST_ROOT "F:\\Frameworks\\boost\\1.86.0")  
+set(BOOST_ROOT "D:\\Coding\\Frameworks\\boost\\1.87.0")  
   
 set(Boost_USE_STATIC_LIBS ON)  
   
@@ -203,28 +254,46 @@ Installing Boost on Linux is really easier, just install the correct dev package
 ```bash
 #!/bin/bash
 
-sudo apt update && sudo apt upgrade -y && sudo apt install -y build-essential g++ autotools-dev libicu-dev libbz2-dev liblzma-dev zlib1g-dev libiconv-hook-dev libpython3-dev libexpat1-dev libzstd-dev
+# Update package list and install required dependencies
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential g++ autotools-dev libicu-dev libbz2-dev liblzma-dev \
+                    zlib1g-dev libiconv-hook-dev libpython3-dev libexpat1-dev libzstd-dev unzip wget
 
-ROOT_PATH="/home/remi/Frameworks"
-LIBRARY_NAME="Boost"
-LIBRARY_VERSION="1.86.0"
-LIBRARY_VERSION_NAME="1_86_0"
-DOWNLOAD_URL="https://boostorg.jfrog.io/artifactory/main/release/${LIBRARY_VERSION}/source/boost_${LIBRARY_VERSION_NAME}.tar.gz"
-ARCHIVE_NAME="boost_${LIBRARY_VERSION_NAME}.tar.gz"
-EXTRACTED_DIR_NAME="boost_${LIBRARY_VERSION_NAME}"
+# Define variables for Boost 1.87.0
+ROOT_PATH="/opt/boost"
+LIBRARY_VERSION="1.87.0"
+LIBRARY_VERSION_NAME="1_87"
+LIBRARY_NAME_SUB_BOOST="boost_1_87_0"
+DOWNLOAD_URL="https://archives.boost.io/release/${LIBRARY_VERSION}/source/${LIBRARY_NAME_SUB_BOOST}.zip"
+ARCHIVE_NAME="${LIBRARY_NAME_SUB_BOOST}.zip"
+EXTRACTED_DIR_NAME="${LIBRARY_NAME_SUB_BOOST}"
 
+# Create the base installation directory and move to it
+mkdir -p $ROOT_PATH
 cd $ROOT_PATH
-mkdir -p $LIBRARY_NAME
-cd $LIBRARY_NAME
 
+# Download the Boost archive
 wget $DOWNLOAD_URL
-tar -xvf $ARCHIVE_NAME
+
+# Remove any previous extracted directories to ensure a clean installation
+rm -rf $LIBRARY_VERSION
+
+# Extract the archive
+unzip $ARCHIVE_NAME
+
+# Rename the extracted folder to match the version directly inside /opt/boost
 mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
+
+# Remove the archive after extraction
 rm $ARCHIVE_NAME
+
+# Navigate to the Boost directory
 cd $LIBRARY_VERSION
 
+# Initialize Boost build
 ./bootstrap.sh
 
+# Compile Boost in Debug and Release mode, with both static and shared linking
 ./b2 address-model=64 variant=debug link=static,shared
 ./b2 address-model=64 variant=release link=static,shared
 ```
@@ -233,7 +302,7 @@ cd $LIBRARY_VERSION
 cmake_minimum_required(VERSION 3.26)  
 project(Boost_testing)  
   
-set(BOOST_ROOT "/home/remi/Frameworks/Boost/1.86.0")  
+set(BOOST_ROOT "/opt/boost/1.87.0")  
   
 set(Boost_USE_STATIC_LIBS ON)
   
@@ -246,6 +315,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(Boost_testing main.cpp)
 target_link_libraries(Boost_testing PRIVATE Boost::filesystem)
 ```
+
 ## Exemple de programme
 ```cpp
 #include <iostream>  

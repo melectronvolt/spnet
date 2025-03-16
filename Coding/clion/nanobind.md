@@ -34,12 +34,16 @@ git init
 git submodule add https://github.com/wjakob/nanobind ext/nanobind
 git submodule update --init --recursive
 ```
+
 ## CMakeLists.txt
 ```cmake
 cmake_minimum_required(VERSION 3.26)  
 project(my_ext)  
   
 set(CMAKE_CXX_STANDARD 23)  
+
+# set(Python_EXECUTABLE "C:/Users/remi/.pyenv/pyenv-win/versions/3.13.2/python.exe")
+
   
 find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
 
