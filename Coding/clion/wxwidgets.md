@@ -66,6 +66,8 @@ project(WxWidgets_testing)
 set(CMAKE_CXX_STANDARD 23)
 
 set(wxWidgets_USE_STATIC ON)
+add_definitions(-DwxUSE_NO_MANIFEST=1 -DwxUSE_UNICODE=1 -D_UNICODE -DwxSTATIC_BUILD)
+
 list(APPEND CMAKE_PREFIX_PATH "D:/Coding/Frameworks/wxWidgets")
 
 find_package(wxWidgets REQUIRED COMPONENTS core base)
