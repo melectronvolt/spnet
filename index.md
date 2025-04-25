@@ -29,7 +29,6 @@ EducNat/pbpython
 Coding/python
 Coding/cpp
 Coding/fibo
-Coding/clion
 ```
 
 ```{toctree}

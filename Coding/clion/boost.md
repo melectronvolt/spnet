@@ -254,46 +254,56 @@ Installing Boost on Linux is really easier, just install the correct dev package
 ```bash
 #!/bin/bash
 
-# Update package list and install required dependencies
+# --------------------------------------------------------------------------------
+# Script d'installation de Boost 1.88.0 sur une distribution Debian/Ubuntu
+# --------------------------------------------------------------------------------
+
+# 1. Mise à jour de la liste des paquets et application des mises à jour système
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential g++ autotools-dev libicu-dev libbz2-dev liblzma-dev \
-                    zlib1g-dev libiconv-hook-dev libpython3-dev libexpat1-dev libzstd-dev unzip wget
 
-# Define variables for Boost 1.87.0
-ROOT_PATH="/opt/boost"
-LIBRARY_VERSION="1.87.0"
-LIBRARY_VERSION_NAME="1_87"
-LIBRARY_NAME_SUB_BOOST="boost_1_87_0"
-DOWNLOAD_URL="https://archives.boost.io/release/${LIBRARY_VERSION}/source/${LIBRARY_NAME_SUB_BOOST}.zip"
-ARCHIVE_NAME="${LIBRARY_NAME_SUB_BOOST}.zip"
-EXTRACTED_DIR_NAME="${LIBRARY_NAME_SUB_BOOST}"
+# 2. Installation des dépendances nécessaires à la compilation de Boost
+sudo apt install -y build-essential g++ autotools-dev libicu-dev libbz2-dev \
+                    liblzma-dev zlib1g-dev libiconv-hook-dev libpython3-dev \
+                    libexpat1-dev libzstd-dev tar wget
 
-# Create the base installation directory and move to it
-mkdir -p $ROOT_PATH
-cd $ROOT_PATH
+# 3. Définition des variables relatives à Boost 1.88.0
+ROOT_PATH="/opt/boost"                   # Répertoire d'installation principal
+LIBRARY_VERSION="1.88.0"                 # Version officielle x.y.z
+LIBRARY_VERSION_NAME="1_88"              # Version formatée pour nommage Boost
+LIBRARY_NAME_SUB_BOOST="boost_1_88_0"     # Nom de l'archive et du dossier Boost
+ARCHIVE_EXT="tar.gz"                      # Extension de l'archive
+DOWNLOAD_URL="https://archives.boost.io/release/${LIBRARY_VERSION}/source/${LIBRARY_NAME_SUB_BOOST}.${ARCHIVE_EXT}"
+ARCHIVE_NAME="${LIBRARY_NAME_SUB_BOOST}.${ARCHIVE_EXT}"  # Nom du fichier téléchargé
 
-# Download the Boost archive
-wget $DOWNLOAD_URL
+# 4. Création du répertoire d'installation et déplacement dans celui-ci
+sudo mkdir -p "${ROOT_PATH}"
+cd "${ROOT_PATH}" || { echo "Erreur : impossible d'accéder à ${ROOT_PATH}" >&2; exit 1; }
 
-# Remove any previous extracted directories to ensure a clean installation
-rm -rf $LIBRARY_VERSION
+# 5. Téléchargement de l'archive Boost 1.88.0
+wget "${DOWNLOAD_URL}"
 
-# Extract the archive
-unzip $ARCHIVE_NAME
+# 6. Suppression de toute précédente installation de même version (pour nettoyage)
+sudo rm -rf "${LIBRARY_VERSION}"
 
-# Rename the extracted folder to match the version directly inside /opt/boost
-mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
+# 7. Extraction de l'archive .tar.gz
+tar -xzf "${ARCHIVE_NAME}"
 
-# Remove the archive after extraction
-rm $ARCHIVE_NAME
+# 8. Renommage du dossier extrait pour indiquer directement la version
+mv "${LIBRARY_NAME_SUB_BOOST}" "${LIBRARY_VERSION}"
 
-# Navigate to the Boost directory
-cd $LIBRARY_VERSION
+# 9. Suppression de l'archive pour libérer de l'espace
+rm "${ARCHIVE_NAME}"
 
-# Initialize Boost build
+# 10. Passage dans le dossier Boost nouvellement extrait
+cd "${LIBRARY_VERSION}" || { echo "Erreur : impossible d'accéder à ${LIBRARY_VERSION}" >&2; exit 1; }
+
+# 11. Initialisation du système de build Boost (script bootstrap)
 ./bootstrap.sh
 
-# Compile Boost in Debug and Release mode, with both static and shared linking
+# 12. Compilation de Boost
+#    • Adresse 64 bits (address-model=64)
+#    • Variantes Debug et Release
+#    • Liens statiques et partagés
 ./b2 address-model=64 variant=debug link=static,shared
 ./b2 address-model=64 variant=release link=static,shared
 ```

@@ -191,57 +191,86 @@ endif ()
 ### Installation
 ```bash
 #!/bin/bash
+# -------------------------------------------------------------------------------
+# Installation automatisée de spdlog 1.15.2 sur Debian / Ubuntu
+# -------------------------------------------------------------------------------
 
-# Update package list and install required dependencies
+# 1. Mise à jour du système et installation des dépendances indispensables
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential cmake unzip wget
+sudo apt install -y build-essential cmake ninja-build unzip wget
 
-# Define common paths and variables
-ROOT_PATH="/opt/spdlog"
-LIBRARY_VERSION="1.15.1"
-EXTRACTED_DIR_NAME="spdlog-${LIBRARY_VERSION}"
-ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"
-INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_VERSION}"
+# 2. Définition des variables liées à spdlog 1.15.2
+ROOT_PATH="/opt/spdlog"                       # Répertoire racine pour toutes les versions
+LIBRARY_VERSION="1.15.2"                      # Version x.y.z de spdlog
+ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"        # Nom du fichier ZIP téléchargé
+EXTRACTED_DIR_NAME="spdlog-${LIBRARY_VERSION}"# Dossier généré après extraction
+DOWNLOAD_URL="https://github.com/gabime/spdlog/archive/refs/tags/${ARCHIVE_NAME}"
+INSTALL_PREFIX="${ROOT_PATH}/${LIBRARY_VERSION}" # Chemin d’installation isolé
 
-# Define the correct download URL
-DOWNLOAD_URL="https://github.com/gabime/spdlog/archive/refs/tags/v${LIBRARY_VERSION}.zip"
+# 3. Création (ou vérification) du répertoire racine puis déplacement
+sudo mkdir -p "${ROOT_PATH}"
+cd "${ROOT_PATH}" || { echo "Erreur : impossible d’accéder à ${ROOT_PATH}" >&2; exit 1; }
 
-# Create and navigate to the library installation directory
-mkdir -p $ROOT_PATH
-cd $ROOT_PATH
+# 4. Téléchargement de l’archive spdlog
+wget "${DOWNLOAD_URL}"
 
-# Download and extract the library
-wget $DOWNLOAD_URL
-unzip $ARCHIVE_NAME
-mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
-rm $ARCHIVE_NAME
-cd $LIBRARY_VERSION
+# 5. Nettoyage d’une éventuelle installation précédente de la même version
+sudo rm -rf "${LIBRARY_VERSION}"
 
-# Define common cmake options
-CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALLATION_DIR"
+# 6. Extraction de l’archive ZIP
+unzip "${ARCHIVE_NAME}"
 
-# Function to build and install the library
-build_and_install() {
-    local build_dir=$1
-    local build_type=$2
-    local shared_libs=$3
+# 7. Renommage du dossier extrait pour refléter directement la version
+mv "${EXTRACTED_DIR_NAME}" "${LIBRARY_VERSION}"
 
-    # Remove old build directory if it exists and create a new one
-    rm -rf $build_dir
-    mkdir -p $build_dir
-    cd $build_dir
+# 8. Suppression de l’archive afin d’économiser de l’espace
+rm "${ARCHIVE_NAME}"
 
-    cmake .. $CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=$build_type -DBUILD_SHARED_LIBS=$shared_libs
-    cmake --build . --config $build_type
-    cmake --install . --config $build_type
-    cd ..
-}
+# 9. Passage dans le dossier source de spdlog
+cd "${LIBRARY_VERSION}" || { echo "Erreur : impossible d’accéder à ${LIBRARY_VERSION}" >&2; exit 1; }
 
-# Build and install spdlog in different configurations
-build_and_install "build_debug" "Debug" "OFF"
-build_and_install "build_release" "Release" "OFF"
-build_and_install "build_debug_so" "Debug" "ON"
-build_and_install "build_release_so" "Release" "ON"
+# 10. Options CMake communes
+CMAKE_BASE_OPTIONS="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DSPDLOG_BUILD_TESTS=OFF"
+
+# 11. Compilation — quatre variantes
+#     • Debug   statique
+#     • Release statique
+#     • Debug   partagée
+#     • Release partagée
+
+## 11-a : Debug statique
+mkdir build_debug && cd build_debug
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
+
+## 11-b : Release statique
+mkdir build_release && cd build_release
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+## 11-c : Debug partagée
+mkdir build_debug_so && cd build_debug_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
+
+## 11-d : Release partagée
+mkdir build_release_so && cd build_release_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+# -------------------------------------------------------------------------------
+# Fin de l’installation de spdlog 1.15.2
+#     • Bibliothèques statiques et partagées installées sous : ${INSTALL_PREFIX}
+# -------------------------------------------------------------------------------
+
 ```
 ### CMakeLists.txt
 ```cmake

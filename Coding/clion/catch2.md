@@ -33,7 +33,7 @@ En synthèse, Catch2, avec ses mises à jour dans la v3, demeure un framework de
 # Définir les chemins et les variables pour le téléchargement et l'installation de la bibliothèque
 $BASE_PATH = "D:\Coding\Frameworks"
 $NAME_LIBRARY = "Catch2"
-$LIBRARY_VERSION = "3.8.0"
+$LIBRARY_VERSION = "3.8.1"
 $DOWNLOAD_URL = "https://github.com/catchorg/Catch2/archive/refs/tags/v${LIBRARY_VERSION}.zip"
 
 # compiler le chemin de base pour la bibliothèque
@@ -173,49 +173,87 @@ endif ()
 
 ```bash
 #!/bin/bash
+# -------------------------------------------------------------------------------
+# Installation automatisée de Catch2 3.8.1 sur Debian / Ubuntu
+# -------------------------------------------------------------------------------
 
-# Define common paths and variables
-ROOT_PATH="/home/remi/Frameworks"
-LIBRARY_NAME="Catch2"
-LIBRARY_VERSION="3.8.0"
-DOWNLOAD_URL="https://github.com/catchorg/Catch2/archive/refs/tags/v${LIBRARY_VERSION}.tar.gz"
-EXTRACTED_DIR_NAME="Catch2-${LIBRARY_VERSION}"
-ARCHIVE_NAME="v${LIBRARY_VERSION}.tar.gz"
-INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_NAME}/${LIBRARY_VERSION}"
+# 1. Mise à jour du système et installation des dépendances indispensables
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential cmake ninja-build tar wget
 
-# Navigate to the root path and set up directories
-cd $ROOT_PATH
-mkdir -p $LIBRARY_NAME
-cd $LIBRARY_NAME
+# 2. Définition des variables liées à Catch2 3.8.1
+ROOT_PATH="/opt/catch2"                     # Dossier racine pour toutes les versions de Catch2
+LIBRARY_NAME="Catch2"                       # Nom logique de la bibliothèque
+LIBRARY_VERSION="3.8.1"                     # Version x.y.z
+ARCHIVE_NAME="v${LIBRARY_VERSION}.tar.gz"   # Nom de l’archive source
+EXTRACTED_DIR_NAME="${LIBRARY_NAME}-${LIBRARY_VERSION}"  # Dossier après extraction
+DOWNLOAD_URL="https://github.com/catchorg/Catch2/archive/refs/tags/${ARCHIVE_NAME}"
 
-# Download and extract the library
-wget $DOWNLOAD_URL
-tar -xzvf $ARCHIVE_NAME
-mv $EXTRACTED_DIR_NAME $LIBRARY_VERSION
-rm $ARCHIVE_NAME
-cd $LIBRARY_VERSION
+INSTALL_PREFIX="${ROOT_PATH}/${LIBRARY_VERSION}"  # Sera passé à CMake : installation isolée
 
-# Define common cmake options
-CMAKE_OPTIONS="-DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=$INSTALLATION_DIR"
+# 3. Création du répertoire racine puis déplacement dans celui-ci
+sudo mkdir -p "${ROOT_PATH}"
+cd "${ROOT_PATH}" || { echo "Erreur : impossible d’accéder à ${ROOT_PATH}" >&2; exit 1; }
 
-# Build and install functions
-build_and_install() {
-    local build_dir=$1
-    local build_type=$2
-    local shared_libs=$3
-	mkdir $build_dir
-    cd $build_dir
-    cmake .. $CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=$build_type -DBUILD_SHARED_LIBS=$shared_libs
-    cmake --build . --config $build_type
-    cmake --install . --config $build_type
-    cd ..
-}
+# 4. Téléchargement de l’archive Catch2 3.8.1
+wget "${DOWNLOAD_URL}"
 
-# Invoke the build functions
-build_and_install "build_debug" "Debug" "OFF"
-build_and_install "build_release" "Release" "OFF"
-build_and_install "build_debug_so" "Debug" "ON"
-build_and_install "build_release_so" "Release" "ON"
+# 5. Suppression d’une éventuelle installation antérieure de la même version
+sudo rm -rf "${LIBRARY_VERSION}"
+
+# 6. Extraction de l’archive .tar.gz
+tar -xzf "${ARCHIVE_NAME}"
+
+# 7. Renommage du dossier extrait pour refléter directement la version
+mv "${EXTRACTED_DIR_NAME}" "${LIBRARY_VERSION}"
+
+# 8. Nettoyage : suppression de l’archive source pour gagner de l’espace
+rm "${ARCHIVE_NAME}"
+
+# 9. Passage dans le répertoire source de Catch2
+cd "${LIBRARY_VERSION}" || { echo "Erreur : impossible d’accéder à ${LIBRARY_VERSION}" >&2; exit 1; }
+
+# 10. Définition des options CMake communes
+CMAKE_BASE_OPTIONS="-DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX}"
+
+# 11. Compilation — quatre variantes
+#     * Debug   statique
+#     * Release statique
+#     * Debug   partagée
+#     * Release partagée
+
+# 11-a Debug statique
+mkdir build_debug && cd build_debug
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
+
+# 11-b Release statique
+mkdir build_release && cd build_release
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+# 11-c Debug partagée
+mkdir build_debug_so && cd build_debug_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
+
+# 11-d Release partagée
+mkdir build_release_so && cd build_release_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+# -------------------------------------------------------------------------------
+# Fin de l’installation de Catch2 3.8.1 — bibliothèques statiques et partagées
+#     * Fichiers installés sous : ${INSTALL_PREFIX}
+# -------------------------------------------------------------------------------
 ```
 ### CMakeLists.txt
 ```cmake

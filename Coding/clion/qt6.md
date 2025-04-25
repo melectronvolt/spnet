@@ -140,7 +140,7 @@ En principe tout fonctionne et vous devriez voir une fenêtre s’ouvrir :
 ```
 
 
-## Installation sur Linux
+## Installation sur Linux GUI
 - S’inscrire en tant qu’utilisateur souhaitant utilisant la version opensource [https://www.qt.io/download-open-source](https://www.qt.io/download-open-source)
 - Se rendre ici pour télécharger le logiciel [https://www.qt.io/download-qt-installer-oss](https://www.qt.io/download-qt-installer-oss)
 
@@ -252,6 +252,91 @@ Working Directory : `C:\Qt\Tools\QtDesignStudio\bin`
 :width: 600px
 :align: center
 :class: vspace
+```
+
+## Installation Linux sur un serveur
+
+### Installation
+
+```shell
+wget https://download.qt.io/official_releases/qt/6.9/6.9.0/single/qt-everywhere-src-6.9.0.tar.xz
+
+sudo apt-get update
+sudo apt-get install -y build-essential cmake ninja-build perl python3 pkg-config libssl-dev zlib1g-dev
+
+tar -xf qt-everywhere-src-6.9.0.tar.xz
+cd  qt-everywhere-src-6.9.0
+
+mkdir ../qt6-build && cd ../qt6-build
+
+../qt-everywhere-src-6.9.0/configure \
+   -prefix /opt/qt6                         \
+   -opensource -confirm-license -release    \
+   -submodules qtbase                       \
+   -skip qtdeclarative,qt3d,qtquick3d,qtwayland,qtmultimedia,qtwebengine,qtpdf \
+   -no-feature-gui -no-feature-opengl       \
+   -nomake examples -nomake tests
+
+cmake --build . --parallel $(nproc)
+sudo cmake --install .
+```
+
+- Pour activer Qt dans l'environnement
+
+Dans `# ~/.bashrc`
+
+```shell
+export QTDIR=/opt/qt6
+export PATH=$QTDIR/bin:$PATH
+export LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+```
+Puis recharger `source ~/.bashrc`
+
+- Test
+```shell
+qmake6   --version     # outil de build
+```
+
+### Test
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(TestQtConsole LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+list(APPEND CMAKE_PREFIX_PATH "/opt/qt6")
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
+
+add_executable(test_qt_console main.cpp)
+
+target_link_libraries(test_qt_console
+    Qt6::Core
+)
+```
+
+```cpp
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QTimer>
+#include <QDebug>
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+
+    // Tâche différée : affichage puis fermeture propre
+    QTimer::singleShot(0, []{
+        qInfo() << "Qt Core est fonctionnel —"
+                << QDateTime::currentDateTime().toString(Qt::ISODate);
+        QCoreApplication::quit();
+    });
+
+    return app.exec();    // Boucle d’événements minimale
+}
+
 ```
 
 ## Static build of QT 6

@@ -151,67 +151,89 @@ else ()
 endif ()
 ```
 ## Linux
+
+### Install Script 
 ```sh
 #!/bin/bash
+# -------------------------------------------------------------------------------
+# Installation automatisée de GoogleTest 1.16.0 sur Debian / Ubuntu
+# -------------------------------------------------------------------------------
 
-# Update package list and install required dependencies
+# 1. Mise à jour du système et installation des dépendances indispensables
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y build-essential cmake unzip wget
+sudo apt install -y build-essential cmake ninja-build unzip wget
 
-# Define variables for Google Test 1.16.0
-ROOT_PATH="/opt/gtest"
-LIBRARY_VERSION="1.16.0"
-LIBRARY_NAME_SUB_GTEST="googletest-${LIBRARY_VERSION}"
-DOWNLOAD_URL="https://github.com/google/googletest/archive/refs/tags/v${LIBRARY_VERSION}.zip"
-ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"
-INSTALLATION_DIR="${ROOT_PATH}/${LIBRARY_VERSION}"
+# 2. Définition des variables liées à GoogleTest 1.16.0
+ROOT_PATH="/opt/gtest"                       # Dossier racine pour toutes les versions de GoogleTest
+LIBRARY_VERSION="1.16.0"                     # Version x.y.z officielle
+ARCHIVE_NAME="v${LIBRARY_VERSION}.zip"       # Nom de l’archive téléchargée
+LIBRARY_NAME_SUB_GTEST="googletest-${LIBRARY_VERSION}" # Nom du dossier interne dans l’archive
+DOWNLOAD_URL="https://github.com/google/googletest/archive/refs/tags/${ARCHIVE_NAME}"
+INSTALL_PREFIX="${ROOT_PATH}/${LIBRARY_VERSION}"        # Préfixe d’installation isolée
 
-# Create the base installation directory and move to it
-mkdir -p $ROOT_PATH
-cd $ROOT_PATH
+# 3. Création (ou vérification) du répertoire racine puis déplacement
+sudo mkdir -p "${ROOT_PATH}"
+cd "${ROOT_PATH}" || { echo "Erreur : impossible d’accéder à ${ROOT_PATH}" >&2; exit 1; }
 
-# Download the Google Test archive
-wget $DOWNLOAD_URL
+# 4. Téléchargement de l’archive GoogleTest 1.16.0
+wget "${DOWNLOAD_URL}"
 
-# Remove any previous extracted directories to ensure a clean installation
-rm -rf $INSTALLATION_DIR
+# 5. Nettoyage d’une éventuelle installation précédente
+sudo rm -rf "${LIBRARY_VERSION}"
 
-# Extract the archive
-unzip $ARCHIVE_NAME
+# 6. Extraction de l’archive ZIP
+unzip "${ARCHIVE_NAME}"
 
-# Rename the extracted folder to match the version directly inside /opt/gtest
-mv $LIBRARY_NAME_SUB_GTEST $LIBRARY_VERSION
+# 7. Renommage du dossier extrait pour refléter directement la version
+mv "${LIBRARY_NAME_SUB_GTEST}" "${LIBRARY_VERSION}"
 
-# Remove the archive after extraction
-rm $ARCHIVE_NAME
+# 8. Suppression de l’archive pour libérer de l’espace
+rm "${ARCHIVE_NAME}"
 
-# Navigate to the Google Test directory
-cd $LIBRARY_VERSION
+# 9. Passage dans le dossier source de GoogleTest
+cd "${LIBRARY_VERSION}" || { echo "Erreur : impossible d’accéder à ${LIBRARY_VERSION}" >&2; exit 1; }
 
-# Define common CMake options
-CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALLATION_DIR"
+# 10. Options CMake communes
+CMAKE_BASE_OPTIONS="-DCMAKE_INSTALL_PREFIX=${INSTALL_PREFIX} -DBUILD_GMOCK=ON"
 
-# Function to build and install Google Test with specified build type and shared/static configuration
-build_and_install() {
-    local build_dir=$1
-    local build_type=$2
-    local shared_libs=$3
+# 11. Compilation — quatre variantes
+#     * Debug   statique
+#     * Release statique
+#     * Debug   partagée
+#     * Release partagée
 
-    # Remove any existing build directory before creating a new one
-    rm -rf $build_dir
-    mkdir $build_dir
-    cd $build_dir
-    cmake .. $CMAKE_OPTIONS -DCMAKE_BUILD_TYPE=$build_type -DBUILD_SHARED_LIBS=$shared_libs
-    cmake --build . --config $build_type
-    cmake --install . --config $build_type
-    cd ..
-}
+# 11-a Debug statique
+mkdir build_debug && cd build_debug
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
 
-# Build and install Google Test for all configurations
-build_and_install "build_debug" "Debug" "OFF"
-build_and_install "build_release" "Release" "OFF"
-build_and_install "build_debug_so" "Debug" "ON"
-build_and_install "build_release_so" "Release" "ON"
+# 11-b Release statique
+mkdir build_release && cd build_release
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+# 11-c Debug partagée
+mkdir build_debug_so && cd build_debug_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Debug   -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Debug
+cmake --install . --config Debug
+cd ..
+
+# 11-d Release partagée
+mkdir build_release_so && cd build_release_so
+cmake .. ${CMAKE_BASE_OPTIONS} -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON
+cmake --build . --config Release
+cmake --install . --config Release
+cd ..
+
+# -------------------------------------------------------------------------------
+# Fin de l’installation de GoogleTest 1.16.0
+#     • Bibliothèques statiques et partagées disponibles sous : ${INSTALL_PREFIX}
+# -------------------------------------------------------------------------------
 ```
 ### CMakeLists.txt
 
