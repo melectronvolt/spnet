@@ -1,6 +1,6 @@
 
 project = 'Sciences-Physiques.NET'
-copyright = '2024, Rémi MEVAERE'
+copyright = '2025, Rémi MEVAERE'
 author = 'Rémi MEVAERE'
 
 extensions = ["myst_parser","sphinx_copybutton","sphinx_togglebutton","sphinx_tippy"]
