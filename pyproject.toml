@@ -1,22 +1,27 @@
-[tool.poetry]
+[project]
 name = "spnet"
 version = "0.1.0"
 description = ""
-authors = ["Rémi MEVAERE <github@volt.melectron.fr>"]
+authors = [{ name = "Rémi MEVAERE", email = "github@volt.melectron.fr" }]
+requires-python = ">=3.14.2"
 readme = "README.md"
-package-mode = false
+dependencies = [
+    "livereload>=2.7.0",
+    "sphinx>=8.1.3,<9",
+    "sphinx-book-theme>=1.1.4",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-togglebutton>=0.3.2",
+    "sphinx-tippy>=0.4.3",
+    "myst-parser>=4.0.0",
+    "sphinx-autobuild>=2024.10.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-livereload = "^2.7.0"
-sphinx = "^8.1.3"
-sphinx-book-theme = "^1.1.3"
-sphinx-copybutton = "^0.5.2"
-sphinx-togglebutton = "^0.3.2"
-sphinx-tippy = "^0.4.3"
-myst-parser = "^4.0.0"
+[dependency-groups]
+dev = []
 
+[tool.uv]
+package = false
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

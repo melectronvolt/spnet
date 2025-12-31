@@ -120,4 +120,3 @@ $$
 # Sources et autres liens
 [^1]: [Wikipédia, Jean Frédéric Frenet](https://fr.wikipedia.org/wiki/Jean_Frédéric_Frenet)
 [^2]: [Wikipédia, Repère de Frenet](https://fr.wikipedia.org/wiki/Repère_de_Frenet)
-[^3]: Mécanique - J.-Ph Pérez - 7ed

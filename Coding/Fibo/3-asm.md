@@ -15,7 +15,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
 
 ## Description of the DLL/SO
 ### Prologue
-```asm
+```nasm
     ; Prologue
     push rbp
     mov rbp, rsp
@@ -34,7 +34,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
 ```
 
 ### Calculate the Golden ratio
-```asm
+```nasm
     ; Calculate the golden ratio: (1.0 + sqrt(5.0)) / 2.0
     fld1                     ; Load 1.0 onto the FPU stack
     fld QWORD PTR [FIVE]     ; Load 5.0 onto the FPU stack
@@ -47,7 +47,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
 
 ### Get the arguments from 
 #### Windows
-```asm
+```nasm
     ; Arguments in register store in local
     ; RCX -> fbStart (8 bytes)
     ; RDX -> maxTerms (1 byte)
@@ -68,7 +68,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
     ; [rbp+80] -> reference to goldenNbr - (8 bytes)
 ```
 #### Linux
-```asm
+```nasm
     ; Arguments in register store in local
     ; RDI -> fbStart (8 bytes)
     ; RSI -> maxTerms (1 byte)
@@ -93,7 +93,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
 ```
 ### Verification
 
-```asm
+```nasm
     ; Some verification
     ; -----------------
     ; Load the values of fbStart, maxFibo, maxTerms, maxFactor, and nbrOfLoops into registers
@@ -133,7 +133,7 @@ The github repository contains MASM (windows) and NASM (windows + linux) version
 ```
 ### Main loop
 
-```asm
+```nasm
     xor rcx, rcx ; reset counter to 0
 main_loop:
     call clearAndFill
@@ -146,7 +146,7 @@ main_loop:
     jl main_loop
 ```
 #### Clear, fill the arrays
-```asm
+```nasm
 clearAndFill PROC
     push rcx
     push rsi
@@ -210,7 +210,7 @@ loop_double:
 clearAndFill ENDP
 ```
 #### Searching Fibonacci sequence terms
-```asm
+```nasm
 fiboWork PROC
     push rcx
     push rsi
@@ -262,7 +262,7 @@ out_max_fibo:
 fiboWork ENDP
 ```
 ##### Factorization
-```asm
+```nasm
 factorization PROC
     ; save r10 and rcx to the stack
     push r10
@@ -333,7 +333,7 @@ end_factorization:
 factorization ENDP
 ```
 ##### isPrime function
-```asm
+```nasm
 ; test if a r12 is prime number
 isPrime PROC
     ; save on the stack r8, r9
@@ -384,7 +384,7 @@ exit:
 isPrime ENDP
 ```
 ### Calculate error
-```asm
+```nasm
 calculate_error PROC ; Calculate and fill error array
     push rcx
     push rsi
@@ -432,7 +432,7 @@ two_first_value:
 calculate_error ENDP
 ```
 ### Epilogue
-```asm
+```nasm
 epilogue:
     ; Restore non-volatile registers
     pop r15

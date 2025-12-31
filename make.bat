@@ -1,35 +1,55 @@
 @ECHO OFF
-
 pushd %~dp0
 
-REM Command file for Sphinx documentation
+REM Command file for Sphinx documentation with uv
+REM Usage: make.bat [command]
 
-if "%SPHINXBUILD%" == "" (
-	set SPHINXBUILD=sphinx-build
-)
 set SOURCEDIR=.
 set BUILDDIR=_build
 
-%SPHINXBUILD% >NUL 2>NUL
-if errorlevel 9009 (
-	echo.
-	echo.The 'sphinx-build' command was not found. Make sure you have Sphinx
-	echo.installed, then set the SPHINXBUILD environment variable to point
-	echo.to the full path of the 'sphinx-build' executable. Alternatively you
-	echo.may add the Sphinx directory to PATH.
-	echo.
-	echo.If you don't have Sphinx installed, grab it from
-	echo.https://www.sphinx-doc.org/
-	exit /b 1
-)
+REM Commandes personnalisées pour uv
+if "%1" == "serve" goto serve
+if "%1" == "watch" goto watch
+if "%1" == "install" goto install
 
+REM Commandes Sphinx standard
 if "%1" == "" goto help
-
-%SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+uv run sphinx-build -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
 goto end
 
 :help
-%SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+echo.Commandes Sphinx standard:
+echo.  make.bat html       - Construire la documentation HTML
+echo.  make.bat clean      - Nettoyer les fichiers generes
+echo.  make.bat linkcheck  - Verifier les liens
+echo.  make.bat help       - Afficher l'aide Sphinx complete
+echo.
+echo.Commandes supplementaires avec uv:
+echo.  make.bat install    - Installer les dependances
+echo.  make.bat serve      - Serveur avec livereload
+echo.  make.bat watch      - Serveur avec auto-rebuild
+echo.
+echo.Pour plus d'options Sphinx:
+uv run sphinx-build -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%
+goto end
+
+:install
+echo.Installation des dependances avec uv...
+uv sync
+echo.Installation terminee!
+goto end
+
+:serve
+echo.Demarrage du serveur livereload...
+echo.Ouvrez http://localhost:5500 dans votre navigateur
+echo.Appuyez sur Ctrl+C pour arreter
+uv run python -m livereload %SOURCEDIR%
+goto end
+
+:watch
+echo.Demarrage du serveur avec auto-rebuild...
+uv run sphinx-autobuild %SOURCEDIR% %BUILDDIR%/html --open-browser
+goto end
 
 :end
 popd
